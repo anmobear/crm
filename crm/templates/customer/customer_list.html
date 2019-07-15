@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    {% load my_tags %}
+    <form method="get" class="form-inline">
+    <a href="{% reverse_url request "customer_add" %}" style="font-size: 16px"><i class="fa fa-plus" aria-hidden="true"></i>添加</a>
+        <input class="form-control" type="text" name="query">
+        <button class=" btn btn-sm btn-default" type="submit">
+            搜索
+        </button>
+
+    </form>
+
+
+    <form action="" class="form-inline" method="post">
+    {% csrf_token %}
+        <select class="form-control " name="action" id="">
+            {% if request.path_info == "/crm/my_customer/" %}
+                <option value="multi_pub">私户转共户</option>
+            {% else %}
+                <option value="multi_apply">公户转私户</option>
+            {% endif %}
+        </select>
+        <input  class="btn btn-default btn-sm" type="submit">
+    <table class="table table-hover table-bordered">
+            <thead>
+            <tr>
+                <th>选择</th>
+                <th>编号</th>
+                <th>QQ号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>出生日期</th>
+                <th>客户来源</th>
+                <th>资讯课程</th>
+                <th>状态</th>
+                <th>查看跟进</th>
+                <th>添加报名</th>
+                <th>销售</th>
+                <th>已报班级</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for customer in customer_obj %}
+                <tr>
+                    <td><input type="checkbox" name="ids" value="{{ customer.pk }}"></td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ customer.qq }}</td>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.get_sex_display }}</td>
+                    <td>{{ customer.birthday }}</td>
+                    <td>{{ customer.get_source_display }}</td>
+                    <td >{{ customer.show_stutas }}</td>
+                    <td>{{ customer.course }}</td>
+                    <td><a href="{% url "one_consult" customer.pk %}">查看</a></td>
+                    <td><a href="{% url "enrollment_add" customer.pk %}">添加</a></td>
+                    <td>{{ customer.consultant|default:"没有" }}</td>
+                    <td>{{ customer.show_class }}</td>
+                    <td><a href="{% reverse_url request 'customer_edit' customer.pk %}"> <i
+                                class="fa fa-pencil-square-o"></i> </a></td>
+
+                    {#            <td><a href="{% url "customer_edit/" customer.pk %}"><i class="fa fa-edit" style="font-size: 16px"></i></a></td>#}
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+
+        </table>
+    </form>
+{% endblock %}
